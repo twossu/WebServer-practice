@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Contact = require("../models/contactModel");
+const path = require("path");
 
 // contactController-2 ~ contactController-6
 // @desc Get all contacts
@@ -8,18 +9,24 @@ const getAllContacts = asyncHandler(async (req, res) => {
   // 전체 연락처 보기
   // res.status(200).send("Contacts Page");
   const contacts = await Contact.find();
-  console.log(contacts);
   // res.status(200).send(contacts);
-  // res.status(200).send("<h1 style='color:green'>Contacts Page</h1>");
-  // res.render("getAll", { heading: "User List", age: 9 });
-  res.render("index", { contacts: contacts }); /* 넘겨주는이름: 넘겨주는값*/
+  //const filePath = path.join(__dirname, "../assets", "getAll.html");
+  //res.sendFile(filePath);
+  //res.render("getAll");
+  res.render("index", { contacts: contacts });
 });
+
+// @desc View add contact form
+// @route GET /contacts/add
+const addContactForm = (req, res) => {
+  res.render("add");
+};
 
 // @desc Create a contact
 // @route POST /contacts
 const createContact = asyncHandler(async (req, res) => {
   // 새 연락처 추가하기
-  //console.log(req.body);
+  console.log(req.body);
   const { name, email, phone } = req.body;
   if (!name || !email || !phone) {
     return res.status(400).send("필수값이 입력되지 않았습니다.");
@@ -32,8 +39,8 @@ const createContact = asyncHandler(async (req, res) => {
   });
 
   console.log(contact);
-
-  res.status(201).send("Create Contacts");
+  //res.status(201).send("Create Contacts");
+  res.redirect("/contacts");
 });
 
 // @desc Get contact
@@ -42,7 +49,8 @@ const getContact = asyncHandler(async (req, res) => {
   // 연락처 상세 보기
   // res.status(200).send(`View Contact for ID: ${req.params.id}`);
   const contact = await Contact.findById(req.params.id);
-  res.status(200).send(contact);
+  //res.status(200).send(contact);
+  res.render("update4mongo", { contact: contact });
 });
 
 // @desc Update contact
@@ -65,8 +73,9 @@ const updateContact = asyncHandler(async (req, res) => {
 
   // 저장
   contact.save();
-
-  res.status(200).json(contact);
+  //res.status(200).send("Update Contact");
+  //res.status(200).json(contact);
+  res.redirect("/contacts");
 });
 
 // @desc Delete contact
@@ -80,7 +89,8 @@ const deleteContact = asyncHandler(async (req, res) => {
     throw new Error("Contact not found");
   }
   await contact.deleteOne();
-  res.status(200).send(`Delete Contact for ID: ${req.params.id}`);
+  //res.status(200).send(`Delete Contact for ID: ${req.params.id}`);
+  res.redirect("/contacts");
 });
 
 module.exports = {
@@ -89,4 +99,5 @@ module.exports = {
   getContact,
   updateContact,
   deleteContact,
+  addContactForm,
 };

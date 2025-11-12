@@ -1,14 +1,16 @@
 const express = require("express");
 const app = express();
-//const dbConnect = require("./config/dbConnect4mongo");
+const dbConnect = require("./config/dbConnect4mongo");
+const methodOverride = require("method-override");
 
 const port = 3000;
-//dbConnect();
+dbConnect();
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.engine("html", require("ejs").renderFile);
 app.use(express.static("./public"));
+app.use(methodOverride("_method"));
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello Node!");
