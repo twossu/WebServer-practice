@@ -26,6 +26,12 @@ const getAllContacts = asyncHandler(async (req, res) => {
   );
 });
 
+// @desc View add contact form
+// @route GET /contacts/add
+const addContactForm = (req, res) => {
+  res.render("add");
+};
+
 // @desc Create a contact
 // @route POST /contacts
 const createContact = asyncHandler(async (req, res) => {
@@ -43,8 +49,8 @@ const createContact = asyncHandler(async (req, res) => {
     function (error, results) {
       if (error) throw new Error("Contact not created");
       console.log(results);
-      res.status(200).send("Create Contact");
-      //res.redirect("/contacts");
+      //res.status(200).send("Create Contact");
+      res.redirect("/contacts");
     }
   );
 });
@@ -54,7 +60,7 @@ const createContact = asyncHandler(async (req, res) => {
 const getContact = asyncHandler(async (req, res) => {
   // 특정 연락처 보기
   console.log("특정 연락처 보기");
-  console.log(req.params.id);
+  //console.log(req.params.id);
   const id = req.params.id;
 
   dbConnect.query(
@@ -65,7 +71,8 @@ const getContact = asyncHandler(async (req, res) => {
       if (results.length > 0) {
         // db에서의 반환값이 있으면 로그인 성공
         console.log(results);
-        res.status(200).send("Read Contact");
+        //res.status(200).send('Read Contact');
+        res.render("update4mysql", { contacts: results });
       } else {
         console.log("No Contacts");
         res.status(200).send("No Contacts");
@@ -87,8 +94,8 @@ const updateContact = asyncHandler(async (req, res) => {
     function (error, results) {
       if (error) throw new Error("Contact not updated");
       console.log(results);
-      res.status(200).send("Update Contact");
-      //res.redirect("/contacts");
+      //res.status(200).send("Update Contact");
+      res.redirect("/contacts");
     }
   );
 });
@@ -98,7 +105,7 @@ const updateContact = asyncHandler(async (req, res) => {
 const deleteContact = asyncHandler(async (req, res) => {
   // 특정 연락처 삭제
   const id = req.params.id;
-  const { name, email, phone } = req.body;
+  //const { name, email, phone } = req.body;
 
   dbConnect.execute(
     "DELETE FROM Contacts WHERE id = ?",
@@ -106,8 +113,8 @@ const deleteContact = asyncHandler(async (req, res) => {
     function (error, results) {
       if (error) throw new Error("Contact not deleted");
       console.log(results);
-      res.status(200).send("Delete Contact");
-      //res.redirect("/contacts");
+      //res.status(200).send("Delete Contact");
+      res.redirect("/contacts");
     }
   );
 });
@@ -118,4 +125,5 @@ module.exports = {
   getContact,
   updateContact,
   deleteContact,
+  addContactForm,
 };
